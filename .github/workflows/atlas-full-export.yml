@@ -1,0 +1,52 @@
+name: OP Atlas Full Export
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'atlas-export/**'
+      - '.github/workflows/atlas-full-export.yml'
+
+permissions:
+  contents: read
+
+env:
+  PYTHONUNBUFFERED: '1'
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r atlas-export/requirements.txt
+          python -m playwright install --with-deps chromium
+
+      - name: Run full Atlas export
+        run: python atlas-export/extract_atlas.py
+
+      - name: Show audit
+        if: always()
+        run: |
+          if [ -f atlas-export/out/atlas_audit.json ]; then
+            cat atlas-export/out/atlas_audit.json
+          fi
+
+      - name: Upload Atlas archive
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: op-atlas-full-export
+          path: atlas-export/out/
+          if-no-files-found: warn
+          retention-days: 90
