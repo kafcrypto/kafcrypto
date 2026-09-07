@@ -35,6 +35,9 @@ jobs:
       - name: Run full Atlas export
         run: python atlas-export/extract_atlas.py
 
+      - name: Audit all-rounds public results
+        run: python atlas-export/audit_all_rounds.py
+
       - name: Show audit
         if: always()
         run: |
