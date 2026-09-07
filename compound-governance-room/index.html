@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Compound Governance Room — Institutional governance onboarding</title>
+<meta name="description" content="A Compound-specific institutional governance onboarding and intelligence demo, powered by Anode." />
+<meta name="color-scheme" content="dark" />
+<style>
+:root{
+  --bg:#090c0b;
+  --panel:#0f1412;
+  --panel2:#121815;
+  --panel3:#161d1a;
+  --ink:#f4f7f5;
+  --muted:#8c9993;
+  --line:#202a25;
+  --line2:#2a352f;
+  --green:#00d395;
+  --green2:#0b5f47;
+  --greenSoft:#0e211b;
+  --amber:#d7a246;
+  --red:#e2736d;
+  --blue:#6da6ff;
+  --shadow:0 24px 80px rgba(0,0,0,.38);
+  --radius:16px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:-.01em}
+a{color:inherit;text-decoration:none}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+.container{max-width:1180px;margin:0 auto;padding:0 24px}
+.shell{min-height:100vh}
+
+/* top nav */
+.topbar{height:68px;border-bottom:1px solid var(--line);background:rgba(9,12,11,.88);backdrop-filter:blur(18px);position:sticky;top:0;z-index:40}
+.topbar .container{height:100%;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:720;letter-spacing:-.03em}
+.brandmark{width:30px;height:30px;border-radius:9px;background:var(--green);color:#04100c;display:grid;place-items:center;font-weight:900;font-size:13px}
+.brandtext{display:flex;flex-direction:column;line-height:1.04}.brandtext span{font-size:15px}.brandtext small{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.02em;margin-top:3px}
+.nav{display:flex;gap:8px;align-items:center}
+.nav button{background:transparent;border:0;color:#9aa69f;padding:9px 11px;border-radius:9px}
+.nav button:hover,.nav button.active{color:var(--ink);background:#111714}
+.nav .primary{background:var(--green);color:#04100c;font-weight:720;padding:10px 14px}
+.nav .primary:hover{background:#16dfa4;color:#04100c}
+.mobileMenu{display:none;background:transparent;border:1px solid var(--line);color:var(--ink);border-radius:9px;padding:8px 10px}
+
+/* shared */
+.page{display:none}.page.active{display:block}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line2);background:#0d1210;color:#a8b3ad;border-radius:999px;padding:7px 10px;font-size:11px;text-transform:uppercase;letter-spacing:.08em}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+.h1{font-size:clamp(48px,7vw,82px);line-height:.97;letter-spacing:-.065em;font-weight:720;margin:22px 0 18px;max-width:1000px}
+.h2{font-size:clamp(34px,4vw,52px);line-height:1.02;letter-spacing:-.055em;font-weight:700;margin:0 0 14px}
+.h3{font-size:22px;letter-spacing:-.035em;margin:0 0 8px}
+.lead{font-size:19px;line-height:1.6;color:#9ba8a1;max-width:760px;margin:0}
+.subtle{color:var(--muted)}
+.kicker{font-size:11px;color:#7f8d85;text-transform:uppercase;letter-spacing:.1em;font-weight:650}
+.btn{border:1px solid var(--line2);background:#121815;color:var(--ink);border-radius:10px;padding:11px 14px;font-weight:680;transition:.17s ease;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:hover{transform:translateY(-1px);border-color:#3b4a43}.btn.primary{background:var(--green);border-color:var(--green);color:#04100c}.btn.primary:hover{background:#18e2a7}.btn.ghost{background:transparent}.btn.small{padding:8px 10px;font-size:12px}
+.badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 8px;border:1px solid var(--line2);color:#9aa69f;font-size:11px;background:#0c110f}
+.badge.high{color:#f1aaa6;border-color:#5b302d;background:#1c1110}.badge.med{color:#e4bd77;border-color:#5d4927;background:#19150d}.badge.low{color:#86dcb8;border-color:#24503d;background:#0d1814}.badge.green{color:#78e6bc;border-color:#1f5b45;background:#0b1a14}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius)}
+.section{padding:92px 0;border-top:1px solid rgba(255,255,255,.03)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.divider{height:1px;background:var(--line);margin:22px 0}
+
+/* landing */
+.hero{padding:92px 0 60px}
+.heroCopy{max-width:1020px}
+.heroActions{display:flex;gap:10px;margin-top:30px;flex-wrap:wrap}
+.heroProof{margin-top:48px;display:grid;grid-template-columns:1.15fr .85fr;gap:18px}
+.window{border:1px solid var(--line2);border-radius:18px;background:#0d1210;box-shadow:var(--shadow);overflow:hidden}
+.windowTop{height:48px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 16px;color:#738078;font-size:11px}
+.windowTitle{display:flex;align-items:center;gap:8px;color:#c4ccc7}.windowTitle b{font-weight:650}.windowDots{display:flex;gap:5px}.windowDots i{display:block;width:7px;height:7px;border-radius:50%;background:#2c3732}
+.mock{display:grid;grid-template-columns:190px 1fr;min-height:455px}.mockSide{border-right:1px solid var(--line);padding:15px}.mockNav{padding:9px 10px;border-radius:8px;color:#66746c;font-size:12px;margin-bottom:3px}.mockNav.active{background:#151c18;color:#dbe1dd}.mockMain{padding:22px}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0 18px}.metric{padding:13px;border:1px solid var(--line);border-radius:11px;background:#0d1210}.metric b{display:block;font-size:23px;letter-spacing:-.04em}.metric span{display:block;font-size:10px;color:#78857e;margin-top:4px}.queueItem{display:grid;grid-template-columns:8px 1fr auto;gap:11px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}.queueItem:first-child{border-top:0}.severity{width:8px;height:8px;border-radius:50%;background:var(--green)}.severity.amber{background:var(--amber)}.queueItem h4{margin:0;font-size:12px}.queueItem p{margin:2px 0 0;color:#718078;font-size:10px}.queueItem .time{font-size:10px;color:#819088}
+.sideCallout{padding:24px;display:flex;flex-direction:column;justify-content:space-between;min-height:100%}.sideCallout .big{font-size:34px;line-height:1.1;letter-spacing:-.05em;margin:16px 0}.principle{border-left:2px solid var(--green);padding-left:14px;color:#c7d0cb;font-size:15px}.microList{display:grid;gap:9px;margin-top:26px}.micro{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding-top:9px;color:#8b9991;font-size:12px}.micro b{color:#d9dfdc;font-weight:620}
+.pain{padding:24px;min-height:220px}.pain .num{font-size:11px;color:#64736b;margin-bottom:42px}.pain h3{font-size:19px;margin:0 0 8px}.pain p{color:#8e9a94;margin:0}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden}.step{background:#0d1210;padding:28px}.step .num{color:var(--green);font-size:11px;margin-bottom:45px}.step h3{font-size:22px;margin:0 0 8px}.step p{color:#89968f;margin:0}
+.securityStrip{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:28px}.securityStrip div{background:#0d1210;padding:16px 12px;text-align:center;color:#8b9891;font-size:11px}.securityStrip b{display:block;color:#e5ebe7;margin-bottom:4px;font-size:12px}
+.ctaBand{padding:40px;border:1px solid #1f4c3b;border-radius:18px;background:linear-gradient(180deg,#0d1d17,#0c1411)}.ctaBand .h2{max-width:760px}
+
+/* app layout */
+.appHeader{padding:30px 0 22px;border-bottom:1px solid var(--line)}
+.appTitleRow{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}.appTitleRow h1{font-size:34px;letter-spacing:-.05em;margin:4px 0 4px}.appTitleRow p{margin:0;color:#839087}
+.appBody{padding:28px 0 80px}
+.appGrid{display:grid;grid-template-columns:1fr 320px;gap:18px}
+.summary{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:18px}.summary .card{padding:14px}.summary b{display:block;font-size:22px;letter-spacing:-.04em}.summary span{font-size:10px;color:#728078}
+.panel{padding:18px}.panelHead{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:8px}.panelHead h3{margin:0;font-size:16px}.panelHead small{color:#75827b}
+.attentionItem{display:grid;grid-template-columns:9px 1.7fr .7fr .8fr .8fr auto;gap:12px;align-items:center;padding:14px 3px;border-top:1px solid var(--line);cursor:pointer}.attentionItem:hover{background:#111713}.attentionItem h4{margin:0 0 3px;font-size:13px}.attentionItem p{margin:0;color:#75827b;font-size:11px}.colLabel{display:block;color:#5f6c65;font-size:9px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}.smallText{font-size:11px;color:#a7b1ab}.lowNoise{opacity:.72}.policyRule{padding:13px 0;border-top:1px solid var(--line);display:flex;gap:10px}.policyRule:first-child{border-top:0}.ruleIcon{width:24px;height:24px;border-radius:7px;background:var(--greenSoft);color:var(--green);display:grid;place-items:center;font-size:10px;flex:0 0 auto}.policyRule b{font-size:12px}.policyRule span{display:block;color:#748179;font-size:10px;margin-top:2px}.workflow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:12px}.wf{border:1px solid var(--line2);border-radius:8px;padding:7px 9px;font-size:10px;color:#a1ada6}.arrow{color:#46534c}
+.table{width:100%;border-collapse:collapse}.table th,.table td{text-align:left;padding:11px 8px;border-top:1px solid var(--line);font-size:11px}.table th{color:#66736c;font-size:9px;text-transform:uppercase;letter-spacing:.08em}.table td{color:#aab4ae}.table td:first-child{color:#e8edea}
+
+/* onboarding */
+.wizard{display:grid;grid-template-columns:220px 1fr;gap:18px}.wizardNav{padding:13px}.wizStep{display:flex;gap:10px;padding:11px;border-radius:9px;color:#6e7c74;margin-bottom:3px}.wizStep.active{background:#151c18;color:#e7ece9}.wizNum{width:22px;height:22px;border-radius:7px;border:1px solid var(--line2);display:grid;place-items:center;font-size:10px}.wizStep.active .wizNum{background:var(--green);color:#04100c;border-color:var(--green)}.wizStep b{display:block;font-size:11px}.wizStep span{font-size:9px;color:#69766f}.wizardMain{padding:24px;min-height:520px}.wizardMain h2{font-size:31px;letter-spacing:-.045em;margin:0 0 7px}.wizardMain>p{color:#849188;margin:0 0 24px}.choiceGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.choice{border:1px solid var(--line2);border-radius:12px;padding:16px;background:#0c110f;cursor:pointer;min-height:155px}.choice:hover,.choice.selected{border-color:#1f7d5e;background:#0c1814}.choice.selected{box-shadow:inset 0 0 0 1px #1c5d47}.choice h4{margin:0 0 7px;font-size:14px}.choice p{margin:0;color:#77847d;font-size:11px}.choice .radio{width:18px;height:18px;border-radius:50%;border:1px solid #435048;margin-bottom:28px}.choice.selected .radio{border:5px solid var(--green)}
+.formGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:10px;color:#748179;text-transform:uppercase;letter-spacing:.06em}.field input,.field textarea,.field select{background:#0a0f0d;color:#e9eeeb;border:1px solid var(--line2);border-radius:9px;padding:11px;outline:none}.field input:focus,.field textarea:focus,.field select:focus{border-color:#227a5d}.field textarea{min-height:90px;resize:vertical}.wizardFooter{display:flex;justify-content:space-between;gap:12px;margin-top:28px;padding-top:18px;border-top:1px solid var(--line)}
+.exposureGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.exposure{padding:15px;border:1px solid var(--line);border-radius:11px}.exposure span{display:block;color:#6c7972;font-size:10px}.exposure b{display:block;font-size:20px;margin-top:4px}.ready{display:grid;place-items:center;text-align:center;min-height:420px}.readyMark{width:52px;height:52px;border-radius:16px;background:var(--green);color:#03100b;display:grid;place-items:center;font-weight:900;font-size:22px;margin:0 auto 18px}.ready h2{font-size:34px;margin:0 0 8px}.ready p{color:#819087;max-width:520px;margin:0 auto 24px}
+
+/* delegation */
+.modeCard{padding:22px;min-height:250px;position:relative}.modeCard .modeNum{color:#607068;font-size:10px}.modeCard h3{font-size:24px;margin:38px 0 8px}.modeCard p{color:#849188;margin:0 0 18px}.modeCard ul{list-style:none;padding:0;margin:0}.modeCard li{padding:7px 0;border-top:1px solid var(--line);font-size:11px;color:#9aa69f}.modeCard.recommended{border-color:#1e654d}.recommendedLabel{position:absolute;right:14px;top:14px;color:#71ddb5;font-size:9px;text-transform:uppercase;letter-spacing:.08em}
+
+/* admin */
+.adminMetrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}.adminMetric{padding:16px}.adminMetric b{display:block;font-size:25px}.adminMetric span{font-size:10px;color:#76847c}.bar{height:7px;background:#17201c;border-radius:999px;overflow:hidden;margin-top:10px}.bar i{display:block;height:100%;background:var(--green);border-radius:inherit}.insight{padding:14px 0;border-top:1px solid var(--line)}.insight:first-child{border-top:0}.insight b{display:block;font-size:12px}.insight span{display:block;color:#738078;font-size:10px;margin-top:2px}
+
+/* drawer */
+.drawerBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.58);backdrop-filter:blur(5px);z-index:80;display:none}.drawerBackdrop.open{display:block}
+.drawer{position:absolute;right:0;top:0;height:100%;width:min(610px,94vw);background:#0b100e;border-left:1px solid var(--line2);padding:26px;overflow:auto;box-shadow:-30px 0 80px rgba(0,0,0,.35)}
+.drawerHead{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}.drawerHead h2{font-size:30px;line-height:1.08;letter-spacing:-.045em;margin:10px 0 8px}.close{background:transparent;border:1px solid var(--line2);color:#b8c2bc;border-radius:9px;padding:7px 9px}.briefSection{padding:18px 0;border-top:1px solid var(--line)}.briefSection h4{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#6d7a73;margin:0 0 8px}.briefSection p,.briefSection li{color:#a5afa9;font-size:12px}.briefSection ul{margin:0;padding-left:17px}.sourceLink{display:inline-flex;padding:7px 9px;border:1px solid var(--line2);border-radius:8px;color:#9ccfb9;font-size:10px;margin-right:6px;margin-bottom:6px}
+
+/* pilot */
+.pilotWrap{display:grid;grid-template-columns:.8fr 1.2fr;gap:30px;padding:54px 0 90px}.pilotCopy{padding-top:12px}.pilotForm{padding:24px}.success{display:grid;place-items:center;text-align:center;min-height:430px}.success b{font-size:25px;display:block;margin:12px 0 6px}.success p{color:#809087;max-width:420px}
+
+footer{border-top:1px solid var(--line);padding:30px 0 45px;color:#65736b;font-size:11px}.footerRow{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+
+@media(max-width:1000px){
+  .nav button:not(.primary){display:none}.mobileMenu{display:block}.heroProof,.grid2,.appGrid,.pilotWrap{grid-template-columns:1fr}.summary{grid-template-columns:repeat(3,1fr)}.securityStrip{grid-template-columns:repeat(3,1fr)}.adminMetrics{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:760px){
+  .container{padding:0 16px}.hero{padding-top:62px}.h1{font-size:48px}.grid3,.steps,.choiceGrid{grid-template-columns:1fr}.mock{grid-template-columns:1fr}.mockSide{display:none}.metrics{grid-template-columns:repeat(2,1fr)}.wizard{grid-template-columns:1fr}.wizardNav{display:flex;overflow:auto;gap:4px}.wizStep{min-width:140px}.formGrid,.exposureGrid{grid-template-columns:1fr}.summary{grid-template-columns:repeat(2,1fr)}.attentionItem{grid-template-columns:8px 1fr auto}.attentionItem>*:nth-child(3),.attentionItem>*:nth-child(4),.attentionItem>*:nth-child(5){display:none}.securityStrip{grid-template-columns:repeat(2,1fr)}.appTitleRow{flex-direction:column}.adminMetrics{grid-template-columns:1fr 1fr}.pilotWrap{padding-top:30px}.section{padding:68px 0}
+}
+@media(max-width:480px){.adminMetrics,.summary,.metrics{grid-template-columns:1fr}.securityStrip{grid-template-columns:1fr}.h1{font-size:43px}.heroActions{flex-direction:column}.heroActions .btn{width:100%}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar">
+    <div class="container">
+      <a class="brand" href="#overview" onclick="showPage('overview')">
+        <span class="brandmark">C</span>
+        <span class="brandtext"><span>Compound Governance Room</span><small>Powered by Anode</small></span>
+      </a>
+      <nav class="nav" id="nav">
+        <button data-page="overview" class="active" onclick="showPage('overview')">Overview</button>
+        <button data-page="onboarding" onclick="showPage('onboarding')">Onboarding</button>
+        <button data-page="institutional" onclick="showPage('institutional')">Institutional Demo</button>
+        <button data-page="delegation" onclick="showPage('delegation')">Delegation</button>
+        <button data-page="admin" onclick="showPage('admin')">Compound Admin</button>
+        <button class="primary" onclick="showPage('pilot')">Pilot</button>
+      </nav>
+      <button class="mobileMenu" onclick="showPage('institutional')">Open demo</button>
+    </div>
+  </header>
+
+  <!-- OVERVIEW -->
+  <main id="page-overview" class="page active">
+    <section class="hero">
+      <div class="container">
+        <div class="heroCopy">
+          <span class="eyebrow"><span class="dot"></span> Institutional governance onboarding for Compound</span>
+          <h1 class="h1">Institution-ready governance for Compound.</h1>
+          <p class="lead">Everything an institutional holder needs to understand and act on Compound governance — in one place. Compound keeps the relationship. Institutions keep control.</p>
+          <div class="heroActions">
+            <button class="btn primary" onclick="showPage('institutional')">See institutional demo →</button>
+            <button class="btn" onclick="showPage('onboarding')">Explore onboarding flow</button>
+          </div>
+        </div>
+
+        <div class="heroProof">
+          <div class="window">
+            <div class="windowTop"><div class="windowTitle"><div class="windowDots"><i></i><i></i><i></i></div><b>Northstar Digital Asset Fund</b></div><span>Illustrative demo</span></div>
+            <div class="mock">
+              <aside class="mockSide">
+                <div class="mockNav active">Governance inbox</div><div class="mockNav">Exposure</div><div class="mockNav">Delegation</div><div class="mockNav">Policy</div><div class="mockNav">Decision record</div>
+              </aside>
+              <div class="mockMain">
+                <div class="kicker">Compound governance</div>
+                <div style="font-size:25px;letter-spacing:-.04em;margin-top:4px">Three things require your attention this week.</div>
+                <div class="metrics">
+                  <div class="metric"><b>84.2k</b><span>COMP voting power</span></div>
+                  <div class="metric"><b>2</b><span>Requires attention</span></div>
+                  <div class="metric"><b>6</b><span>No action required</span></div>
+                  <div class="metric"><b>36h</b><span>Next deadline</span></div>
+                </div>
+                <div class="queueItem"><span class="severity"></span><div><h4>Protocol upgrade implementation</h4><p>Policy trigger: upgrade / implementation change</p></div><span class="time">36h</span></div>
+                <div class="queueItem"><span class="severity amber"></span><div><h4>Market parameter adjustment</h4><p>Relevant to an actively used market</p></div><span class="time">3d</span></div>
+                <div class="queueItem"><span class="severity" style="background:#3c4b44"></span><div><h4>Routine parameter update</h4><p>Below materiality threshold — digest only</p></div><span class="time">5d</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="card sideCallout">
+            <div>
+              <div class="kicker">Design principle</div>
+              <div class="big">Organize the decision.<br>Don’t make it.</div>
+              <div class="principle">The Governance Room surfaces material decisions, prepares source-linked context and routes review internally. Final control stays with the institution.</div>
+            </div>
+            <div class="microList">
+              <div class="micro"><span>Custody</span><b>Institution</b></div>
+              <div class="micro"><span>Decision</span><b>Institution</b></div>
+              <div class="micro"><span>Execution</span><b>Native Compound interfaces</b></div>
+              <div class="micro"><span>Intelligence layer</span><b>Governance Room</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="kicker">Why this exists</div>
+        <h2 class="h2">Governance should not become an onboarding tax.</h2>
+        <p class="lead">Institutional holders can have meaningful governance rights without wanting a full governance department. The missing layer is not another voting interface — it is a clean workflow for attention, accountability and control.</p>
+        <div class="grid3" style="margin-top:36px">
+          <div class="card pain"><div class="num">01</div><h3>Too many surfaces</h3><p>Forums, proposals, delegates and onchain interfaces fragment the context an institution needs to make a decision.</p></div>
+          <div class="card pain"><div class="num">02</div><h3>Not everything is material</h3><p>Routine governance competes with upgrades, treasury decisions and changes that may actually affect institutional exposure.</p></div>
+          <div class="card pain"><div class="num">03</div><h3>Control cannot be vague</h3><p>Internal owners, review thresholds and a decision record matter when governance rights sit inside a professional organization.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="kicker">The workflow</div>
+        <h2 class="h2">Portfolio → Attention Queue → Decision Record.</h2>
+        <div class="steps" style="margin-top:34px">
+          <div class="step"><div class="num">01 / Map</div><h3>Understand the rights</h3><p>Voting power, delegation state, active decisions, deadlines and governance workload.</p></div>
+          <div class="step"><div class="num">02 / Triage</div><h3>Surface what matters</h3><p>Policy thresholds turn governance activity into an institution-specific attention queue.</p></div>
+          <div class="step"><div class="num">03 / Record</div><h3>Route and document</h3><p>Owner, review, internal decision, native execution and an auditable record of what happened.</p></div>
+        </div>
+        <div class="securityStrip">
+          <div><b>Read-only by default</b>Monitoring, not custody</div>
+          <div><b>No signing</b>Execution stays native</div>
+          <div><b>Source-linked</b>Facts stay inspectable</div>
+          <div><b>Human-controlled</b>No autonomous voting</div>
+          <div><b>Policy-aware</b>Materiality is explicit</div>
+          <div><b>Auditable</b>Decision record included</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="ctaBand">
+          <div class="kicker">Compound-sponsored governance layer</div>
+          <h2 class="h2">Make institutional participation easier without forcing every holder into the same operating model.</h2>
+          <p class="lead">Delegate, vote internally, or use a hybrid policy. The Governance Room gives each institution a clear path while giving Compound a better onboarding and activation layer.</p>
+          <div class="heroActions"><button class="btn primary" onclick="showPage('institutional')">Open institutional demo →</button><button class="btn" onclick="showPage('admin')">See Compound-side view</button></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ONBOARDING -->
+  <main id="page-onboarding" class="page">
+    <section class="appHeader"><div class="container"><div class="appTitleRow"><div><div class="kicker">Institution onboarding</div><h1>Set up Compound governance in minutes.</h1><p>Illustrative demo — no live wallet lookup or transactions.</p></div><span class="badge">Northstar Digital Asset Fund</span></div></div></section>
+    <section class="appBody"><div class="container"><div class="wizard">
+      <div class="card wizardNav" id="wizardNav">
+        <div class="wizStep active" data-step="1"><span class="wizNum">1</span><div><b>Exposure</b><span>Understand rights</span></div></div>
+        <div class="wizStep" data-step="2"><span class="wizNum">2</span><div><b>Ownership</b><span>Assign reviewers</span></div></div>
+        <div class="wizStep" data-step="3"><span class="wizNum">3</span><div><b>Policy</b><span>Set thresholds</span></div></div>
+        <div class="wizStep" data-step="4"><span class="wizNum">4</span><div><b>Participation</b><span>Choose model</span></div></div>
+        <div class="wizStep" data-step="5"><span class="wizNum">5</span><div><b>Ready</b><span>Open inbox</span></div></div>
+      </div>
+      <div class="card wizardMain">
+        <div class="wizardPane" data-pane="1"><div class="kicker">Step 1 of 5</div><h2>Your Compound governance exposure</h2><p>A single view of the governance rights and workload attached to this account.</p><div class="exposureGrid"><div class="exposure"><span>COMP balance</span><b>84,240</b></div><div class="exposure"><span>Voting power</span><b>84,240</b></div><div class="exposure"><span>Delegation status</span><b>Undelegated</b></div><div class="exposure"><span>Open decisions</span><b>8</b></div><div class="exposure"><span>Needs attention</span><b style="color:var(--green)">2</b></div><div class="exposure"><span>Estimated workload</span><b>1.8h/mo</b></div></div><div class="notice" style="margin-top:18px;border:1px solid var(--line);padding:13px;border-radius:10px;color:#839088">Sample data only. In a production flow, the governance exposure would be mapped from verified addresses and Compound governance sources.</div></div>
+        <div class="wizardPane hidden" data-pane="2"><div class="kicker">Step 2 of 5</div><h2>Who owns governance internally?</h2><p>Route material decisions to the right people instead of relying on one shared inbox.</p><div class="formGrid"><div class="field"><label>Governance owner</label><select><option>Elena Ross — Digital Assets</option><option>Unassigned</option></select></div><div class="field"><label>Legal / compliance reviewer</label><select><option>Marcus Lee — Legal</option><option>Only when triggered</option></select></div><div class="field"><label>Investment / risk reviewer</label><select><option>Nadia Kim — Portfolio Risk</option><option>Only when triggered</option></select></div><div class="field"><label>Notification channel</label><select><option>Email + Slack</option><option>Email only</option><option>Slack only</option></select></div></div></div>
+        <div class="wizardPane hidden" data-pane="3"><div class="kicker">Step 3 of 5</div><h2>Define what deserves attention.</h2><p>Policy rules turn Compound governance activity into a materiality filter.</p><div class="panel" style="padding:0;border:0;background:transparent"><div class="policyRule"><span class="ruleIcon">✓</span><div><b>Escalate protocol upgrades and implementation changes</b><span>Always requires human review.</span></div></div><div class="policyRule"><span class="ruleIcon">✓</span><div><b>Escalate treasury changes above $250k equivalent impact</b><span>Route to governance owner + legal.</span></div></div><div class="policyRule"><span class="ruleIcon">✓</span><div><b>Escalate governance-process / constitutional changes</b><span>Route to governance owner.</span></div></div><div class="policyRule"><span class="ruleIcon">✓</span><div><b>Escalate changes affecting markets the institution actively uses</b><span>Add portfolio risk reviewer.</span></div></div><div class="policyRule"><span class="ruleIcon">—</span><div><b>Routine parameter changes stay digest-only</b><span>Unless a risk or exposure threshold is triggered.</span></div></div></div></div>
+        <div class="wizardPane hidden" data-pane="4"><div class="kicker">Step 4 of 5</div><h2>How do you want to participate?</h2><p>Choose an operating model. The demo does not execute delegation or voting.</p><div class="choiceGrid" id="participationChoices"><div class="choice" onclick="selectChoice(this)"><div class="radio"></div><h4>Delegate</h4><p>Assign voting power to a recognized delegate while retaining governance visibility.</p></div><div class="choice" onclick="selectChoice(this)"><div class="radio"></div><h4>Internal voting</h4><p>Keep review and decisions fully in-house, with native Compound execution.</p></div><div class="choice selected" onclick="selectChoice(this)"><div class="radio"></div><h4>Hybrid</h4><p>Delegate routine governance and retain direct internal review for material decisions.</p></div></div></div>
+        <div class="wizardPane hidden" data-pane="5"><div class="ready"><div><div class="readyMark">✓</div><h2>Your Compound governance setup is ready.</h2><p>Materiality rules, internal owners and a hybrid participation model are configured for this illustrative account.</p><button class="btn primary" onclick="showPage('institutional')">Open governance inbox →</button></div></div></div>
+        <div class="wizardFooter" id="wizardFooter"><button class="btn" id="backBtn" onclick="wizardMove(-1)" disabled>Back</button><button class="btn primary" id="nextBtn" onclick="wizardMove(1)">Continue →</button></div>
+      </div>
+    </div></div></section>
+  </main>
+
+  <!-- INSTITUTIONAL DEMO -->
+  <main id="page-institutional" class="page">
+    <section class="appHeader"><div class="container"><div class="appTitleRow"><div><div class="kicker">Northstar Digital Asset Fund · Compound</div><h1>Compound governance inbox</h1><p>One place to see what requires attention, why it matters and who owns the review.</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><span class="badge green">Illustrative demo — sample data</span><button class="btn small" onclick="showPage('delegation')">Participation setup</button></div></div></div></section>
+    <section class="appBody"><div class="container">
+      <div class="summary"><div class="card"><b>84.2k</b><span>COMP voting power</span></div><div class="card"><b style="color:var(--green)">2</b><span>Requires attention</span></div><div class="card"><b>6</b><span>No action required</span></div><div class="card"><b>84.2k</b><span>Undelegated</span></div><div class="card"><b>36h</b><span>Next deadline</span></div><div class="card"><b>1.8h</b><span>Est. attention / month</span></div></div>
+      <div class="appGrid">
+        <div>
+          <div class="card panel"><div class="panelHead"><h3>Requires attention</h3><span class="badge high">2 material</span></div>
+            <div class="attentionItem" onclick="openBrief(0)"><span class="severity"></span><div><h4>Protocol upgrade implementation</h4><p>Upgrade / implementation · Sample proposal</p></div><div><span class="colLabel">Deadline</span><span class="smallText">36h</span></div><div><span class="colLabel">Materiality</span><span class="badge high">High</span></div><div><span class="colLabel">Owner</span><span class="smallText">Elena Ross</span></div><span class="badge">Review</span></div>
+            <div class="attentionItem" onclick="openBrief(1)"><span class="severity amber"></span><div><h4>Market parameter adjustment</h4><p>Market risk · Active exposure trigger</p></div><div><span class="colLabel">Deadline</span><span class="smallText">3d</span></div><div><span class="colLabel">Materiality</span><span class="badge med">Medium</span></div><div><span class="colLabel">Owner</span><span class="smallText">Nadia Kim</span></div><span class="badge">Pending</span></div>
+          </div>
+
+          <div class="card panel"><div class="panelHead"><h3>No action required · digest</h3><small>6 items</small></div>
+            <div class="attentionItem lowNoise" onclick="openBrief(2)"><span class="severity" style="background:#425049"></span><div><h4>Routine reserve factor parameter update</h4><p>Below policy threshold</p></div><div><span class="colLabel">Deadline</span><span class="smallText">5d</span></div><div><span class="colLabel">Materiality</span><span class="badge low">Low</span></div><div><span class="colLabel">Owner</span><span class="smallText">Digest</span></div><span class="badge">No action</span></div>
+            <div class="attentionItem lowNoise"><span class="severity" style="background:#425049"></span><div><h4>Delegate compensation housekeeping</h4><p>No portfolio or policy trigger</p></div><div><span class="colLabel">Deadline</span><span class="smallText">6d</span></div><div><span class="colLabel">Materiality</span><span class="badge low">Low</span></div><div><span class="colLabel">Owner</span><span class="smallText">Digest</span></div><span class="badge">No action</span></div>
+            <div class="attentionItem lowNoise"><span class="severity" style="background:#425049"></span><div><h4>Governance tooling maintenance item</h4><p>No decision required from this holder</p></div><div><span class="colLabel">Deadline</span><span class="smallText">7d</span></div><div><span class="colLabel">Materiality</span><span class="badge low">Low</span></div><div><span class="colLabel">Owner</span><span class="smallText">Digest</span></div><span class="badge">No action</span></div>
+          </div>
+
+          <div class="card panel"><div class="panelHead"><h3>Decision record</h3><button class="btn small">Export sample</button></div><table class="table"><thead><tr><th>Decision</th><th>Reviewer</th><th>Recorded</th><th>Internal outcome</th><th>Execution</th></tr></thead><tbody><tr><td>Treasury service-provider renewal</td><td>Elena Ross</td><td>Sep 02</td><td>Approved internally</td><td>Recorded</td></tr><tr><td>Market collateral parameter change</td><td>Nadia Kim</td><td>Aug 28</td><td>No direct action</td><td>Delegate</td></tr><tr><td>Governance process amendment</td><td>Marcus Lee</td><td>Aug 21</td><td>Reviewed</td><td>Native vote</td></tr></tbody></table></div>
+        </div>
+        <aside>
+          <div class="card panel"><div class="panelHead"><h3>Governance policy</h3><span class="badge green">4 active rules</span></div><div class="policyRule"><span class="ruleIcon">↑</span><div><b>Protocol upgrades</b><span>Always escalate</span></div></div><div class="policyRule"><span class="ruleIcon">$</span><div><b>Treasury impact &gt; $250k</b><span>Governance + legal review</span></div></div><div class="policyRule"><span class="ruleIcon">M</span><div><b>Used-market changes</b><span>Add portfolio risk reviewer</span></div></div><div class="policyRule"><span class="ruleIcon">—</span><div><b>Routine parameters</b><span>Digest unless threshold triggered</span></div></div></div>
+          <div class="card panel"><div class="panelHead"><h3>Routing</h3><small>Hybrid model</small></div><div class="workflow"><span class="wf">Owner</span><span class="arrow">→</span><span class="wf">Review</span><span class="arrow">→</span><span class="wf">Internal decision</span><span class="arrow">→</span><span class="wf">Native execution</span><span class="arrow">→</span><span class="wf">Record</span></div></div>
+          <div class="card panel" style="background:#0d1713;border-color:#1d4c39"><div class="kicker">Optional human layer</div><h3 style="font-size:18px;margin:10px 0 7px">Anode Intelligence</h3><p style="color:#829087;font-size:11px;margin:0 0 15px">Request analyst review for complex or unfamiliar governance decisions without outsourcing final control.</p><button class="btn small" onclick="toast('Analyst review request captured in this demo.')">Request analyst review</button></div>
+        </aside>
+      </div>
+    </div></section>
+  </main>
+
+  <!-- DELEGATION -->
+  <main id="page-delegation" class="page">
+    <section class="appHeader"><div class="container"><div class="appTitleRow"><div><div class="kicker">Participation setup</div><h1>Choose how your institution exercises Compound governance rights.</h1><p>Visibility stays with the institution regardless of participation model.</p></div><span class="badge green">Illustrative workflow</span></div></div></section>
+    <section class="appBody"><div class="container">
+      <div class="grid3">
+        <div class="card modeCard"><div class="modeNum">01</div><h3>Delegate</h3><p>Assign voting power to a delegate while keeping governance visibility and a decision record.</p><ul><li>Lower internal workload</li><li>Visibility retained</li><li>Good for routine governance</li></ul></div>
+        <div class="card modeCard"><div class="modeNum">02</div><h3>Internal voting</h3><p>Keep all review and decisions in-house and use native Compound interfaces for execution.</p><ul><li>Full internal accountability</li><li>Direct decision ownership</li><li>Higher operating workload</li></ul></div>
+        <div class="card modeCard recommended"><span class="recommendedLabel">Current sample setup</span><div class="modeNum">03</div><h3>Hybrid</h3><p>Delegate routine matters while escalating material decisions for direct internal review.</p><ul><li>Policy-driven exceptions</li><li>Lower routine workload</li><li>Material control retained</li></ul></div>
+      </div>
+      <div class="grid2" style="margin-top:18px">
+        <div class="card panel"><div class="panelHead"><h3>Illustrative delegate options</h3><small>No endorsement implied</small></div><table class="table"><thead><tr><th>Delegate</th><th>Focus</th><th>Model</th></tr></thead><tbody><tr><td>Delegate A</td><td>General governance</td><td>Routine delegation</td></tr><tr><td>Risk Specialist Delegate</td><td>Market / risk matters</td><td>Specialist</td></tr><tr><td>Delegate B</td><td>Operations / ecosystem</td><td>General</td></tr></tbody></table></div>
+        <div class="card panel"><div class="panelHead"><h3>Current participation status</h3><span class="badge med">Not activated</span></div><div class="policyRule"><span class="ruleIcon">84</span><div><b>84,240 COMP voting power</b><span>Currently undelegated in this sample account.</span></div></div><div class="policyRule"><span class="ruleIcon">H</span><div><b>Hybrid policy selected</b><span>Material decisions remain internal.</span></div></div><div class="policyRule"><span class="ruleIcon">!</span><div><b>Activation pending</b><span>Execution would occur in native governance tooling, not this demo.</span></div></div><button class="btn primary" style="margin-top:12px" onclick="toast('Demo only — no delegation transaction was created.')">Review activation path</button></div>
+      </div>
+    </div></section>
+  </main>
+
+  <!-- COMPOUND ADMIN -->
+  <main id="page-admin" class="page">
+    <section class="appHeader"><div class="container"><div class="appTitleRow"><div><div class="kicker">Compound-side view</div><h1>Institutional governance adoption</h1><p>Privacy-respecting aggregate signals for onboarding, activation and governance friction.</p></div><span class="badge green">Illustrative demo — sample data</span></div></div></section>
+    <section class="appBody"><div class="container">
+      <div class="adminMetrics"><div class="card adminMetric"><b>28</b><span>Institutional holders onboarded</span></div><div class="card adminMetric"><b>1.42m</b><span>Voting power represented</span></div><div class="card adminMetric"><b>71%</b><span>Delegated or activated</span></div><div class="card adminMetric"><b>83%</b><span>Decisions reviewed before deadline</span></div><div class="card adminMetric"><b>9</b><span>Incomplete onboarding flows</span></div><div class="card adminMetric"><b>18%</b><span>Dormant voting power reactivated</span></div><div class="card adminMetric"><b>64%</b><span>Proposal awareness rate</span></div><div class="card adminMetric"><b>43%</b><span>Hybrid participation model</span></div></div>
+      <div class="appGrid">
+        <div>
+          <div class="card panel"><div class="panelHead"><h3>Institutional cohorts</h3><small>Aggregate / fictional sample accounts</small></div><table class="table"><thead><tr><th>Organization type</th><th>Setup status</th><th>Participation model</th><th>Last active</th><th>Pending attention</th></tr></thead><tbody><tr><td>Digital asset fund</td><td><span class="badge green">Complete</span></td><td>Hybrid</td><td>Today</td><td>2</td></tr><tr><td>Custodian</td><td><span class="badge med">Policy review</span></td><td>Internal</td><td>2d ago</td><td>1</td></tr><tr><td>Market maker</td><td><span class="badge green">Complete</span></td><td>Delegate</td><td>Today</td><td>0</td></tr><tr><td>Treasury organization</td><td><span class="badge">Incomplete</span></td><td>Not set</td><td>8d ago</td><td>0</td></tr><tr><td>Asset manager</td><td><span class="badge green">Complete</span></td><td>Hybrid</td><td>1d ago</td><td>1</td></tr></tbody></table></div>
+          <div class="card panel"><div class="panelHead"><h3>Activation funnel</h3><small>Illustrative</small></div><div style="display:grid;gap:14px;padding-top:8px"><div><div style="display:flex;justify-content:space-between;font-size:11px"><span>Governance exposure mapped</span><b>100%</b></div><div class="bar"><i style="width:100%"></i></div></div><div><div style="display:flex;justify-content:space-between;font-size:11px"><span>Internal owner assigned</span><b>86%</b></div><div class="bar"><i style="width:86%"></i></div></div><div><div style="display:flex;justify-content:space-between;font-size:11px"><span>Materiality policy configured</span><b>75%</b></div><div class="bar"><i style="width:75%"></i></div></div><div><div style="display:flex;justify-content:space-between;font-size:11px"><span>Participation model activated</span><b>71%</b></div><div class="bar"><i style="width:71%"></i></div></div></div></div>
+        </div>
+        <aside>
+          <div class="card panel"><div class="panelHead"><h3>What institutions struggle with</h3><small>Sample insights</small></div><div class="insight"><b>1. Materiality is unclear</b><span>Most common reason for delayed review.</span></div><div class="insight"><b>2. Ownership is fragmented</b><span>Governance, legal and risk often lack a single routing rule.</span></div><div class="insight"><b>3. Delegation model is unresolved</b><span>Large voting power can remain inactive while internal policy is debated.</span></div><div class="insight"><b>4. Routine items create noise</b><span>Digesting low-materiality activity improves review completion on material items.</span></div></div>
+          <div class="card panel" style="background:#0d1713;border-color:#1d4c39"><div class="kicker">Value to Compound</div><h3 style="font-size:20px;margin:10px 0">Reduce governance friction in institutional onboarding.</h3><p style="color:#839088;font-size:11px">Activate governance rights without forcing every holder into a one-size-fits-all operating model.</p><button class="btn primary" style="margin-top:8px" onclick="showPage('pilot')">Explore a pilot →</button></div>
+        </aside>
+      </div>
+    </div></section>
+  </main>
+
+  <!-- PILOT -->
+  <main id="page-pilot" class="page">
+    <div class="container"><div class="pilotWrap">
+      <div class="pilotCopy"><span class="eyebrow"><span class="dot"></span> Pilot validation</span><h1 style="font-size:52px;line-height:1;letter-spacing:-.06em;margin:20px 0 14px">Would this remove real governance friction?</h1><p class="lead">This demo tests a Compound-sponsored onboarding and intelligence layer — not outsourced governance. Institutions keep decision-making and execution in-house.</p><div class="divider"></div><div class="microList"><div class="micro"><span>Primary use case</span><b>Institutional onboarding</b></div><div class="micro"><span>Operating model</span><b>Delegate / Internal / Hybrid</b></div><div class="micro"><span>Control</span><b>Institution-owned</b></div><div class="micro"><span>Optional support</span><b>Anode Intelligence</b></div></div></div>
+      <div class="card pilotForm" id="pilotCard"><div id="pilotForm"><div class="kicker">Request a pilot conversation</div><h2 style="font-size:29px;letter-spacing:-.045em;margin:8px 0 20px">Tell us where governance friction actually appears.</h2><div class="formGrid"><div class="field"><label>Name</label><input placeholder="Your name"></div><div class="field"><label>Work email</label><input type="email" placeholder="you@organization.com"></div><div class="field"><label>Organization</label><input placeholder="Organization"></div><div class="field"><label>Role</label><input placeholder="Role"></div><div class="field"><label>Institution type</label><select><option>Digital asset fund</option><option>Custodian</option><option>Market maker</option><option>Asset manager</option><option>Treasury organization</option><option>Compound-side stakeholder</option><option>Other</option></select></div><div class="field"><label>Preferred participation model</label><select><option>Not sure</option><option>Delegate</option><option>Internal voting</option><option>Hybrid</option></select></div><div class="field full"><label>Biggest governance friction</label><textarea placeholder="What is difficult today?"></textarea></div></div><button class="btn primary" style="width:100%;margin-top:14px" onclick="submitPilot()">Request pilot conversation</button><p style="color:#65736b;font-size:10px;margin:10px 0 0">Demo only. This form does not send data to an external system.</p></div><div class="success hidden" id="pilotSuccess"><div><div class="readyMark">✓</div><b>Pilot request captured in this demo.</b><p>No data was sent externally. In a production version this could route to the appropriate Compound / Anode contact.</p><button class="btn" onclick="showPage('overview')">Back to overview</button></div></div></div>
+    </div></div>
+  </main>
+
+  <footer><div class="container footerRow"><div>Compound Governance Room · Concept demo powered by Anode</div><div>Illustrative data · No custody · No signing · No autonomous voting</div></div></footer>
+</div>
+
+<div class="drawerBackdrop" id="drawerBackdrop" onclick="drawerBackdropClick(event)"><aside class="drawer" id="drawer"><div class="drawerHead"><div><span class="badge green">Decision brief · sample data</span><h2 id="briefTitle">Protocol upgrade implementation</h2><p class="subtle" id="briefSubtitle">High materiality · 36h remaining</p></div><button class="close" onclick="closeBrief()">✕</button></div><div id="briefContent"></div></aside></div>
+<div id="toast" style="display:none;position:fixed;right:18px;bottom:18px;background:#eff7f3;color:#0b1712;padding:11px 14px;border-radius:10px;z-index:120;font-weight:650;box-shadow:var(--shadow)"></div>
+
+<script>
+const briefs=[
+ {title:'Protocol upgrade implementation',sub:'High materiality · 36h remaining',facts:'A sample Compound governance item proposes an implementation change to protocol infrastructure. The demo treats the item as an upgrade-class decision.',changes:'The implementation path and associated contracts would change if the proposal is approved and executed.',why:'The internal policy requires human review for upgrades because they can alter protocol behavior, operational assumptions or risk exposure.',holder:'Northstar has material COMP voting power and an active Compound market exposure. The decision therefore crosses both governance and portfolio-review thresholds.',policy:'Always escalate protocol upgrades / implementation changes. Governance owner + legal review required.',args:['Potential operational or security benefits should be evaluated against implementation risk.','Review whether the change affects markets or integrations used by the institution.','Confirm source materials and execution details before an internal decision.'],questions:['Has the change been independently reviewed?','Does it alter any market the institution actively uses?','Are there implementation dependencies or rollback assumptions?']},
+ {title:'Market parameter adjustment',sub:'Medium materiality · 3d remaining',facts:'A sample proposal changes a parameter for a Compound market used by the illustrative institution.',changes:'Risk / market configuration would change for the affected market.',why:'The proposal is not globally material by default, but it triggers the institution-specific policy because Northstar actively uses the market.',holder:'Portfolio exposure makes this item more relevant to Northstar than to a holder without activity in the affected market.',policy:'Escalate changes affecting markets the institution actively uses. Add portfolio risk reviewer.',args:['Assess the rationale for the parameter change.','Check whether the new value changes liquidation, liquidity or operational assumptions.','Consider exposure-specific impact rather than treating the proposal as generic governance.'],questions:['How large is current exposure?','Does the proposal change downside risk under stressed conditions?','Is any internal limit affected?']},
+ {title:'Routine reserve factor parameter update',sub:'Low materiality · digest only',facts:'A sample routine parameter item is below the institution\'s configured thresholds.',changes:'A narrow protocol parameter would change.',why:'The policy does not require direct review unless risk, treasury or active-market thresholds are triggered.',holder:'No current institution-specific trigger was detected in this illustrative account.',policy:'Routine parameter changes remain digest-only unless a risk or exposure threshold is triggered.',args:['Keep source context available for later audit.','No internal escalation is required under the current sample policy.'],questions:['Did any new portfolio exposure appear since triage?']}
+];
+function showPage(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const el=document.getElementById('page-'+page); if(el) el.classList.add('active');
+  document.querySelectorAll('.nav button[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+  window.location.hash=page; window.scrollTo(0,0);
+}
+function openBrief(i){
+  const b=briefs[i]; document.getElementById('briefTitle').textContent=b.title;document.getElementById('briefSubtitle').textContent=b.sub;
+  document.getElementById('briefContent').innerHTML=`
+    <div class="briefSection"><h4>Source facts</h4><p>${b.facts}</p></div>
+    <div class="briefSection"><h4>What changes</h4><p>${b.changes}</p></div>
+    <div class="briefSection"><h4>Why it matters to Compound</h4><p>${b.why}</p></div>
+    <div class="briefSection"><h4>Why it may matter to this institution</h4><p>${b.holder}</p></div>
+    <div class="briefSection"><h4>Relevant internal policy</h4><p>${b.policy}</p></div>
+    <div class="briefSection"><h4>Arguments / considerations</h4><ul>${b.args.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+    <div class="briefSection"><h4>Open questions</h4><ul>${b.questions.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+    <div class="briefSection"><h4>Source set</h4><a class="sourceLink">Governance forum</a><a class="sourceLink">Proposal</a><a class="sourceLink">Implementation details</a><p style="font-size:10px;color:#65736b">Illustrative source labels only — no fake live links are used in this demo.</p></div>
+    <div class="briefSection"><button class="btn" onclick="toast('Analyst review request captured in this demo.')">Request Anode analyst review</button></div>`;
+  document.getElementById('drawerBackdrop').classList.add('open');
+}
+function closeBrief(){document.getElementById('drawerBackdrop').classList.remove('open')}
+function drawerBackdropClick(e){if(e.target.id==='drawerBackdrop')closeBrief()}
+let wizardStep=1;
+function renderWizard(){document.querySelectorAll('.wizardPane').forEach(p=>p.classList.toggle('hidden',+p.dataset.pane!==wizardStep));document.querySelectorAll('.wizStep').forEach(s=>s.classList.toggle('active',+s.dataset.step===wizardStep));document.getElementById('backBtn').disabled=wizardStep===1;const next=document.getElementById('nextBtn');next.textContent=wizardStep===4?'Finish setup →':'Continue →';document.getElementById('wizardFooter').classList.toggle('hidden',wizardStep===5)}
+function wizardMove(delta){wizardStep=Math.min(5,Math.max(1,wizardStep+delta));renderWizard()}
+function selectChoice(el){el.parentElement.querySelectorAll('.choice').forEach(c=>c.classList.remove('selected'));el.classList.add('selected')}
+function submitPilot(){document.getElementById('pilotForm').classList.add('hidden');document.getElementById('pilotSuccess').classList.remove('hidden')}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.style.display='none',2600)}
+const initial=(window.location.hash||'#overview').replace('#',''); if(document.getElementById('page-'+initial)) showPage(initial); else showPage('overview');
+</script>
+</body>
+</html>
